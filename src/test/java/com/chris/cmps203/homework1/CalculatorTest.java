@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.chris.cmps203.homework1.calculator.Calculator;
 import com.chris.cmps203.homework1.expression.AddExpression;
+import com.chris.cmps203.homework1.expression.MinusExpression;
 import com.chris.cmps203.homework1.expression.MultiplyExpression;
 import com.chris.cmps203.homework1.expression.NumberExpression;
 import org.junit.Before;
@@ -75,6 +76,27 @@ public class CalculatorTest
 
     @Test
     /**
+     * AST: 5 - 3 := 2
+     */
+    public void minusTest()
+    {
+        try {
+            MinusExpression minusExpression = new MinusExpression();
+            NumberExpression numberExpression1 = new NumberExpression();
+            NumberExpression numberExpression2 = new NumberExpression();
+            numberExpression1.setNumber(5);
+            numberExpression2.setNumber(3);
+            minusExpression.setExpression1(numberExpression1);
+            minusExpression.setExpression2(numberExpression2);
+            assertTrue(calculator.eval(minusExpression) == 2);
+        }catch (Exception e){
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    /**
      * AST: 3 * 4 := 12
      */
     public void MultiplyTest()
@@ -96,9 +118,35 @@ public class CalculatorTest
 
     @Test
     /**
+     * AST: 3 - 4 + 5 := 4
+     */
+    public void compositeTest1()
+    {
+        try {
+            MinusExpression minusExpression = new MinusExpression();
+            AddExpression addExpression = new AddExpression();
+            NumberExpression numberExpression1 = new NumberExpression();
+            NumberExpression numberExpression2 = new NumberExpression();
+            NumberExpression numberExpression3 = new NumberExpression();
+            numberExpression1.setNumber(3);
+            numberExpression2.setNumber(4);
+            numberExpression3.setNumber(5);
+            minusExpression.setExpression1(numberExpression1);
+            minusExpression.setExpression2(numberExpression2);
+            addExpression.setExpression1(minusExpression);
+            addExpression.setExpression2(numberExpression3);
+            assertTrue(calculator.eval(addExpression) == 4);
+        }catch (Exception e){
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    /**
      * AST: 3 * 4 + 5 := 17
      */
-    public void compositeTest()
+    public void compositeTest2()
     {
         try {
             MultiplyExpression multiplyExpression = new MultiplyExpression();
@@ -145,4 +193,49 @@ public class CalculatorTest
             assertTrue(false);
         }
     }
+
+    @Test
+    /**
+     * A complex one
+     * AST: (3 - 5) * (4 + 5) * 2 - 1 := -37
+     */
+    public void complexCompositeTest()
+    {
+        try {
+            MinusExpression minusExpression1 = new MinusExpression();
+            MultiplyExpression multiplyExpression1 = new MultiplyExpression();
+            MultiplyExpression multiplyExpression2 = new MultiplyExpression();
+            MinusExpression minusExpression2 = new MinusExpression();
+            AddExpression addExpression = new AddExpression();
+            NumberExpression numberExpression1 = new NumberExpression();
+            NumberExpression numberExpression2 = new NumberExpression();
+            NumberExpression numberExpression3 = new NumberExpression();
+            NumberExpression numberExpression4 = new NumberExpression();
+            NumberExpression numberExpression5 = new NumberExpression();
+            NumberExpression numberExpression6 = new NumberExpression();
+            numberExpression1.setNumber(3);
+            numberExpression2.setNumber(5);
+            numberExpression3.setNumber(4);
+            numberExpression4.setNumber(5);
+            numberExpression5.setNumber(2);
+            numberExpression6.setNumber(1);
+            minusExpression2.setExpression1(numberExpression1);
+            minusExpression2.setExpression2(numberExpression2);
+            addExpression.setExpression1(numberExpression3);
+            addExpression.setExpression2(numberExpression4);
+            multiplyExpression1.setExpression1(minusExpression2);
+            multiplyExpression1.setExpression2(addExpression);
+            multiplyExpression2.setExpression1(multiplyExpression1);
+            multiplyExpression2.setExpression2(numberExpression5);
+            minusExpression1.setExpression1(multiplyExpression2);
+            minusExpression1.setExpression2(numberExpression6);
+            assertTrue(calculator.eval(minusExpression1) == -37);
+        }catch (Exception e){
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+
 }
+
